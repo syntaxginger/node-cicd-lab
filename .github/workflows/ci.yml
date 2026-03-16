@@ -1,32 +1,32 @@
 name: Node.js CI
 
 on:
- push:
-   branches: [ "main" ]
- pull_request:
-   branches: [ "main" ]
-   
-jobs:
- build-and-test:
-   runs-on: ubuntu-latest
-   
-   steps:
-   - uses: actions/checkout@v3
-   
-   - name: Use Node.js
-     uses: actions/setup-node@v3
-     with:
-       node-version: '18.x'
-       
-   - run: npm install
-   - run: echo "Tests would run here..."
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
-# Add this job below the build-and-test job
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'
+
+    - run: npm install
+    - run: echo "Tests would run here..."
+    
+  # Add this job below the build-and-test job
   deploy-docker:
-    needs: build-and-test 
+    needs: build-and-test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v3
 
       - name: Login to Docker Hub
@@ -35,9 +35,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and Push to Docker Hub
+      - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/node-helloworld:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/node-hello-world:latest
+
